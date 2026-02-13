@@ -1,28 +1,30 @@
 [gd_scene format=3 uid="uid://c1p5fv1xi1b38"]
 
 [ext_resource type="PackedScene" uid="uid://dodksu82vkuxl" path="res://room.tscn" id="1_uu6xs"]
-[ext_resource type="PackedScene" uid="uid://6856hsl5ah6f" path="res://server.tscn" id="2_cm0pq"]
 [ext_resource type="PackedScene" uid="uid://dppt42owpok8f" path="res://player.tscn" id="2_r0du0"]
-[ext_resource type="PackedScene" uid="uid://yyl3g1ti1kbw" path="res://wire_3d.tscn" id="4_cm0pq"]
+[ext_resource type="Script" uid="uid://btau0wvij1l1j" path="res://camera_pivot.gd" id="3_r0du0"]
 
 [node name="Main" type="Node3D" unique_id=1445546169]
 
-[node name="Room" parent="." unique_id=210258126 instance=ExtResource("1_uu6xs")]
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1541358184]
+transform = Transform3D(0.7071068, -0.49119765, 0.50865006, 0, 0.7193398, 0.6946584, -0.7071068, -0.49119765, 0.50865006, 0, 227.16985, 0)
+light_energy = 1.5
+shadow_enabled = true
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Room" unique_id=2110148125]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 22.891176, -2.1196833)
-light_energy = 9.396
-light_indirect_energy = 1.158
-omni_range = 45.64392
+[node name="Room" parent="." unique_id=210258126 instance=ExtResource("1_uu6xs")]
 
 [node name="Player" parent="." unique_id=1222316785 instance=ExtResource("2_r0du0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.162131, 0)
 
-[node name="Server" parent="." unique_id=1022166652 instance=ExtResource("2_cm0pq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2590585, 2.3499737, 16.469275)
+[node name="CameraPivot" type="Node3D" parent="." unique_id=725533702 node_paths=PackedStringArray("target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 5)
+script = ExtResource("3_r0du0")
+target = NodePath("../Player")
 
-[node name="Wire3D" parent="." unique_id=350426034 instance=ExtResource("4_cm0pq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.824774, 7.524212)
-
-[node name="Server2" parent="." unique_id=389172704 instance=ExtResource("2_cm0pq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.026969, 2.3634593, 16.51569)
+[node name="Camera3D" type="Camera3D" parent="CameraPivot" unique_id=389288362]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 0, 0)
+projection = 1
+current = true
+size = 66.24753
+near = 0.1
+far = 100.0
