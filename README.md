@@ -24,6 +24,9 @@ I just want a fun game to play. If others enjoy building it together, even bette
 
 Everything is public. Be kind, be helpful, and let's learn together. Most of us (myself included) are probably going to mess up a bunch along the way — and that's okay.
 
+## Join the Community!
+ We have a discord Because nothing Says Sucsess like having a free discord server. https://discord.gg/3gFvvrBd
+
 ## Goals
 
 - Create a satisfying idle / management / tycoon-style game focused on building out increasingly ridiculous server farms
@@ -69,7 +72,6 @@ No gatekeeping. No "must know X years of Godot". If you're nice and want to help
 (Feel free to answer these in Discussions or on pull requests/comments!)
 
 - What kind of server-farm / homelab / data-center things do you want to see in the game?
-- Idle / incremental style? Classic tycoon with menus? First-person rack-building? 2D top-down?
 - Should power, heat, noise, cabling, and uptime be core mechanics?
 - Favorite real-world server horror stories or memes we should reference?
 - Any hardware / brands / old tech you want immortalized in-game?
