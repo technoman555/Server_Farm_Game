@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://dodksu82vkuxl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v321d"]
+size = Vector3(60, 2, 60)
+
+[sub_resource type="BoxMesh" id="BoxMesh_88gup"]
+size = Vector3(60, 2, 60)
+
+[node name="Room" type="Node3D" unique_id=210258126]
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1280147075]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1667888962]
+shape = SubResource("BoxShape3D_v321d")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=404879807]
+mesh = SubResource("BoxMesh_88gup")
+
+[node name="wall north" type="StaticBody3D" parent="." unique_id=1413220824]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="wall north" unique_id=73982919]
+shape = SubResource("BoxShape3D_v321d")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="wall north" unique_id=1513353009]
+mesh = SubResource("BoxMesh_88gup")
+
+[node name="wall south" type="StaticBody3D" parent="." unique_id=1967057235]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 9.232931, 30.612083)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="wall south" unique_id=131833909]
+shape = SubResource("BoxShape3D_v321d")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="wall south" unique_id=1545407196]
+mesh = SubResource("BoxMesh_88gup")
+
+[node name="Wall east" type="StaticBody3D" parent="." unique_id=1549354262]
+transform = Transform3D(1.9106855e-15, 4.371139e-08, 1, 1, -4.371139e-08, 0, 4.371139e-08, 1, -4.371139e-08, -0.7003355, 8.691128, -30.708384)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall east" unique_id=1643494576]
+shape = SubResource("BoxShape3D_v321d")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall east" unique_id=1491620087]
+mesh = SubResource("BoxMesh_88gup")

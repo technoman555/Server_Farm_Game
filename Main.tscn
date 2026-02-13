@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://c1p5fv1xi1b38"]
+
+[ext_resource type="PackedScene" uid="uid://dodksu82vkuxl" path="res://room.tscn" id="1_uu6xs"]
+[ext_resource type="PackedScene" uid="uid://6856hsl5ah6f" path="res://server.tscn" id="2_cm0pq"]
+[ext_resource type="PackedScene" uid="uid://dppt42owpok8f" path="res://player.tscn" id="2_r0du0"]
+[ext_resource type="PackedScene" uid="uid://yyl3g1ti1kbw" path="res://wire_3d.tscn" id="4_cm0pq"]
+
+[node name="Main" type="Node3D" unique_id=1445546169]
+
+[node name="Room" parent="." unique_id=210258126 instance=ExtResource("1_uu6xs")]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Room" unique_id=2110148125]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 22.891176, -2.1196833)
+light_energy = 9.396
+light_indirect_energy = 1.158
+omni_range = 45.64392
+
+[node name="Player" parent="." unique_id=1222316785 instance=ExtResource("2_r0du0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.162131, 0)
+
+[node name="Server" parent="." unique_id=1022166652 instance=ExtResource("2_cm0pq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2590585, 2.3499737, 16.469275)
+
+[node name="Wire3D" parent="." unique_id=350426034 instance=ExtResource("4_cm0pq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.824774, 7.524212)
+
+[node name="Server2" parent="." unique_id=389172704 instance=ExtResource("2_cm0pq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.586097, 2.2596037, 16.07079)
