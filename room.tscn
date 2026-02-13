@@ -1,21 +1,21 @@
 [gd_scene format=3 uid="uid://dodksu82vkuxl"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_v321d"]
-size = Vector3(100, 1, 100)
+[ext_resource type="PackedScene" uid="uid://bsgjg278kytlm" path="res://grid.tscn" id="1_88gup"]
+[ext_resource type="Script" uid="uid://p72a2srwhuj1" path="res://room.gd" id="1_bisa2"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v321d"]
-albedo_color = Color(0.07450981, 0.58431375, 0.05490196, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bisa2"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_88gup"]
-material = SubResource("StandardMaterial3D_v321d")
-size = Vector3(100, 1, 100)
+[sub_resource type="PlaneMesh" id="PlaneMesh_4o3f6"]
+material = SubResource("StandardMaterial3D_bisa2")
+size = Vector2(10, 10)
 
 [node name="Ground" type="Node3D" unique_id=210258126]
+script = ExtResource("1_bisa2")
 
-[node name="Floor" type="StaticBody3D" parent="." unique_id=1280147075]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=881741807]
+mesh = SubResource("PlaneMesh_4o3f6")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1667888962]
-shape = SubResource("BoxShape3D_v321d")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=404879807]
-mesh = SubResource("BoxMesh_88gup")
+[node name="Grid" parent="." unique_id=1328356872 instance=ExtResource("1_88gup")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.482, 0.01, -4.565)
+gridWidth = 10
+gridHeight = 10
