@@ -25,4 +25,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2590585, 2.3499737, 16.4692
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.824774, 7.524212)
 
 [node name="Server2" parent="." unique_id=389172704 instance=ExtResource("2_cm0pq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.586097, 2.2596037, 16.07079)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.026969, 2.3634593, 16.51569)
