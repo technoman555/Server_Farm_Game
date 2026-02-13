@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://d0lxml4lif1qj"]
+
+[ext_resource type="Script" uid="uid://caoe5ue28ijpx" path="res://test_object.gd" id="1_bw4sc"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_erc8u"]
+albedo_color = Color(0.29411766, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hi3mf"]
+material = SubResource("StandardMaterial3D_erc8u")
+
+[node name="Test_object" type="StaticBody3D" unique_id=1415174098]
+script = ExtResource("1_bw4sc")
+offset = Vector3(0.5, 0, 0.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=387156911]
+mesh = SubResource("BoxMesh_hi3mf")
