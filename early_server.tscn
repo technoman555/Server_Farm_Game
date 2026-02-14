@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bcy13ivlsbttw"]
+
+[ext_resource type="Script" uid="uid://caoe5ue28ijpx" path="res://test_object.gd" id="1_eai0w"]
+[ext_resource type="PackedScene" uid="uid://xyks2ofd58xk" path="res://Models/DELL_Server.glb" id="2_eai0w"]
+
+[node name="Server" type="StaticBody3D" unique_id=1689095207]
+script = ExtResource("1_eai0w")
+
+[node name="DELL_Server" parent="." unique_id=393223980 instance=ExtResource("2_eai0w")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)

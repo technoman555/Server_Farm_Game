@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://c1wy8f6oyfm3j"]
+
+[ext_resource type="Script" uid="uid://cah0xhbue6i55" path="res://scripts/cluster.gd" id="1_qvuhq"]
+[ext_resource type="PackedScene" uid="uid://chsdtmtfg3k0m" path="res://Models/ServerRack.glb" id="1_se145"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qvuhq"]
+size = Vector3(2.8999672, 7.196045, 8.078003)
+
+[node name="Cluster" type="StaticBody3D" unique_id=1134432077]
+script = ExtResource("1_qvuhq")
+
+[node name="ServerRack" parent="." unique_id=1806913124 instance=ExtResource("1_se145")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.01014, 0.20698953, -0.33140254)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=316436045]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.31873333, 3.5562744, -0.1642592)
+shape = SubResource("BoxShape3D_qvuhq")

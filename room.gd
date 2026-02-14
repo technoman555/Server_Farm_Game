@@ -1,6 +1,7 @@
 extends Node3D
 @onready var grid: Node3D = $Grid
-const test_object = preload("res://test_object.tscn")
+const dell_server = preload("res://early_server.tscn")
+const cluster = preload("res://cluster.tscn")
 
 var object
 var isValid = false
@@ -12,7 +13,7 @@ func _input(event: InputEvent) -> void:
 			
 			# Case 1: No preview object yet → start placing one
 			if object == null:
-				var items = [test_object]  # your preload or array of possible scenes
+				var items = [dell_server,cluster]  # your preload or array of possible scenes
 				var new_placement = items.pick_random().instantiate()
 				add_child(new_placement)
 				object = new_placement

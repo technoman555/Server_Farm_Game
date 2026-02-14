@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dodksu82vkuxl" path="res://room.tscn" id="1_uu6xs"]
 [ext_resource type="PackedScene" uid="uid://dppt42owpok8f" path="res://player.tscn" id="2_r0du0"]
-[ext_resource type="Script" uid="uid://btau0wvij1l1j" path="res://camera_pivot.gd" id="3_r0du0"]
+[ext_resource type="Script" uid="uid://btau0wvij1l1j" path="res://scripts/camera_pivot.gd" id="3_r0du0"]
 
 [node name="Main" type="Node3D" unique_id=1445546169]
 
@@ -14,18 +14,20 @@ shadow_enabled = true
 [node name="Room" parent="." unique_id=210258126 instance=ExtResource("1_uu6xs")]
 
 [node name="Player" parent="." unique_id=1222316785 instance=ExtResource("2_r0du0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3436172, 0)
+collision_layer = 0
+collision_mask = 0
 
 [node name="CameraPivot" type="Node3D" parent="." unique_id=725533702 node_paths=PackedStringArray("target")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.46540833, 12.423084, 15.545452)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.46540833, 13.0002365, 25.009518)
 script = ExtResource("3_r0du0")
 target = NodePath("../Player")
 lerp_speed = 15.0
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot" unique_id=389288362]
-transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 2.7203655, -6.8140526)
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 2.7203655, -3.6915226)
 projection = 1
 current = true
-size = 15.0
+size = 11.063
 near = 0.1
 far = 100.0

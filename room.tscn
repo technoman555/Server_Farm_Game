@@ -7,7 +7,7 @@
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_4o3f6"]
 material = SubResource("StandardMaterial3D_bisa2")
-size = Vector2(10, 10)
+size = Vector2(50, 50)
 
 [node name="Ground" type="Node3D" unique_id=210258126]
 script = ExtResource("1_bisa2")
@@ -16,6 +16,6 @@ script = ExtResource("1_bisa2")
 mesh = SubResource("PlaneMesh_4o3f6")
 
 [node name="Grid" parent="." unique_id=1328356872 instance=ExtResource("1_88gup")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.482, 0.01, -4.565)
-gridWidth = 10
-gridHeight = 10
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.470097, 0.01, -24.472736)
+gridWidth = 50
+gridHeight = 50
