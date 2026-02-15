@@ -30,12 +30,20 @@ func _generate_grid():
 	for height in range(gridHeight):
 		for width in range(gridWidth):
 			var gridCell = GRID_CELL.instantiate()
-			
-# Set local position directly (recommended)
+			# Set local position directly (recommended)
 			gridCell.position = Vector3(width * cellSize.x, 0, height * cellSize.y)
-			
 			add_child(gridCell)  # now it's in the tree
-			
-# Alternative if you really need global (usually not needed here):
-# add_child(gridCell)
-# gridCell.global_position = global_position + Vector3(width * cellSize.x, 0, height * cellSize.y))
+
+func world_to_cell(world_pos: Vector3) -> Vector2:
+	# Convert a world position to grid cell coordinates (X,Z mapped to Vector2.x, Vector2.y)
+	var local = to_local(world_pos)
+	var cx = int(round(local.x / cellSize.x))
+	var cy = int(round(local.z / cellSize.y))
+	return Vector2(cx, cy)
+
+func cell_to_world(cell: Vector2) -> Vector3:
+	# Convert grid cell coordinates back to a world position (center of the cell)
+	var wx = cell.x * cellSize.x
+	var wz = cell.y * cellSize.y
+	var local_pos = Vector3(wx, 0, wz)
+	return to_global(local_pos)

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dodksu82vkuxl"]
 
-[ext_resource type="PackedScene" uid="uid://bsgjg278kytlm" path="res://grid.tscn" id="1_88gup"]
+[ext_resource type="PackedScene" uid="uid://bsgjg278kytlm" path="res://Scene/grid.tscn" id="1_88gup"]
 [ext_resource type="Script" uid="uid://p72a2srwhuj1" path="res://room.gd" id="1_bisa2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bisa2"]

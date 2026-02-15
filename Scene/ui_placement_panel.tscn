@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://bn8qw4d0p5a1b"]
+
+[ext_resource type="Script" uid="uid://bkmqpw3avhs7" path="res://scripts/ui_placement_panel.gd" id="1_mhm6u"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kj4l2"]
+bg_color = Color(0.2, 0.2, 0.2, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="UIPlacementPanel" type="CanvasLayer" unique_id=1]
+script = ExtResource("1_mhm6u")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=2016463777]
+anchors_preset = -1
+anchor_right = 0.25
+anchor_bottom = 0.5
+offset_right = 200.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kj4l2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=10178188]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=1858652765]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer" unique_id=1679981880]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Place Item"
+
+[node name="ToggleButton" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer" unique_id=85954022]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "−"
+
+[node name="Separator1" type="HSeparator" parent="PanelContainer/VBoxContainer" unique_id=1739590815]
+layout_mode = 2
+
+[node name="ContentContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=1108180435]
+layout_mode = 2
+
+[node name="ClusterButton" type="Button" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=1425418669]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Cluster"
+
+[node name="ServerButton" type="Button" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=1960078392]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Server"
+
+[node name="CableButton" type="Button" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=120728004]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Cable"
+
+[node name="CancelButton" type="Button" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=2142890520]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Cancel"
+
+[node name="SelectedLabel" type="Label" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=955868921]
+layout_mode = 2
+text = "None Selected"
+
+[node name="OpenButton" type="Button" parent="." unique_id=2025005139]
+visible = false
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 60.0
+offset_bottom = 50.0
+text = "Show UI"

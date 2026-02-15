@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://qfvg31mj2gtf"]
+
+[ext_resource type="Script" path="res://scripts/cable.gd" id="1_sxvtn"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_wtgnb"]
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sxvtn"]
+albedo_color = Color(0.5, 0.5, 0.9, 1.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_center"]
+material = SubResource("StandardMaterial3D_sxvtn")
+size = Vector3(0.2, 0.2, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wtgnb"]
+albedo_color = Color(0.5, 0.5, 0.9, 1.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_seg"]
+material = SubResource("StandardMaterial3D_wtgnb")
+size = Vector3(0.2, 0.2, 1.0)
+
+[node name="cable" type="Node3D" unique_id=2029917394]
+script = ExtResource("1_sxvtn")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1637351168]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_wtgnb")
+
+[node name="Center" type="MeshInstance3D" parent="." unique_id=933863243]
+mesh = SubResource("BoxMesh_center")
+
+[node name="Seg_N" type="MeshInstance3D" parent="." unique_id=933863244]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_seg")
+
+[node name="Seg_S" type="MeshInstance3D" parent="." unique_id=933863245]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_seg")
+
+[node name="Seg_E" type="MeshInstance3D" parent="." unique_id=933863246]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0, 0, 0)
+mesh = SubResource("BoxMesh_seg")
+
+[node name="Seg_W" type="MeshInstance3D" parent="." unique_id=933863247]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
+mesh = SubResource("BoxMesh_seg")

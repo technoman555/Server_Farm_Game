@@ -5,7 +5,6 @@
 [ext_resource type="Script" uid="uid://btau0wvij1l1j" path="res://scripts/camera_pivot.gd" id="3_r0du0"]
 [ext_resource type="PackedScene" uid="uid://bn8qw4d0p5a1b" path="res://Scene/ui_placement_panel.tscn" id="4_ui000"]
 [ext_resource type="Script" uid="uid://bkmqpw3avhs7" path="res://scripts/ui_placement_panel.gd" id="5_fos0i"]
-[ext_resource type="PackedScene" uid="uid://network_manager_instance" path="res://Scene/network_manager.tscn" id="6_nm"]
 
 [node name="Main" type="Node3D" unique_id=1445546169]
 
@@ -37,5 +36,3 @@ far = 100.0
 
 [node name="UIPlacementPanel" parent="." unique_id=1008336593 instance=ExtResource("4_ui000")]
 script = ExtResource("5_fos0i")
-
-[node name="NetworkManager" parent="." unique_id=993847201 instance=ExtResource("6_nm")]
