@@ -43,7 +43,9 @@ func get_cable_at(coord: Vector2) -> Node:
 	return cable_grid.get(_coord_key(coord), null)
 
 func register_module(coord: Vector2, module: Node) -> void:
-	module_grid[_coord_key(coord)] = module
+	var key = _coord_key(coord)
+	print("[NetworkManager] register_module at", key, "type:", module.name if module else "null")
+	module_grid[key] = module
 
 func unregister_module(coord: Vector2) -> void:
 	module_grid.erase(_coord_key(coord))
@@ -71,6 +73,7 @@ func _recompute_connections_at(coord: Vector2) -> void:
 	if cable == null:
 		return
 	var mask := 0
+	var module_count := 0
 	for d in DIRS:
 		var neighbor = Vector2(coord.x + d.x, coord.y + d.y)
 		var neighbor_cable = get_cable_at(neighbor)
@@ -84,10 +87,19 @@ func _recompute_connections_at(coord: Vector2) -> void:
 				connected = neighbor_module.accepts_cable()
 			else:
 				connected = true
+			if connected:
+				module_count += 1
+				print("Cable at", coord, "connected to module at", neighbor, "type:", neighbor_module.name if neighbor_module else "null")
 		if connected:
 			mask |= DIR_BIT[d]
 	if cable.has_method("set_connections"):
 		cable.set_connections(mask)
+	if cable.has_method("set_module_connections"):
+		cable.set_module_connections(module_count)
+		if module_count > 0:
+			print("Cable at", coord, "has", module_count, "module connections")
+	if mask > 0:
+		print("Cable at", coord, "connected to cables with mask", mask)
 
 func find_path(start: Vector2, goal: Vector2, require_data: bool=true, require_power: bool=false) -> Array:
 	var start_key = _coord_key(start)
@@ -135,6 +147,23 @@ func send_data(start: Vector2, goal: Vector2, payload) -> bool:
 	var mod = get_module_at(goal)
 	if mod and mod.has_method("on_data_received"):
 		mod.on_data_received(payload)
+	return true
+
+func send_packet(start: Vector2, goal: Vector2) -> bool:
+	var path = find_path(start, goal, true, false)
+	if path.empty():
+		print("[NetworkManager] no packet path from", start, "to", goal)
+		return false
+	print("[NetworkManager] sending packet along path:", path)
+	# Instantiate packet
+	var packet_scene = preload("res://Scene/packet.tscn")
+	var packet = packet_scene.instantiate()
+	packet.target_coord = goal
+	packet.set_path(path)
+	# Add to scene
+	var parent = get_parent()
+	if parent:
+		parent.add_child(packet)
 	return true
 
 func has_power_at(coord: Vector2) -> bool:

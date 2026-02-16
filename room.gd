@@ -1,6 +1,7 @@
 extends Node3D
 @onready var grid: Node3D = $Grid
-
+@onready var status_panel: Panel = $StatusPanel
+@onready var status_label: Label = $StatusPanel/StatusLabel
 
 var object
 var isValid = false
@@ -60,7 +61,6 @@ func _input(event: InputEvent) -> void:
 			if nm:
 				var obj = nm.get_cable_at(coord)
 				var is_cable = true
-				var mod_coord = null
 				if not obj:
 					# Check if any module occupies this coord
 					var world_pos = grid.cell_to_world(coord)
@@ -71,7 +71,6 @@ func _input(event: InputEvent) -> void:
 							var rect = mod.get_rect()
 							if rect.has_point(world_point):
 								obj = mod
-								mod_coord = mc
 								break
 					is_cable = false
 				if obj:
@@ -83,9 +82,15 @@ func _input(event: InputEvent) -> void:
 					if is_cable:
 						nm.unregister_cable(coord)
 					else:
-						var parts = mod_coord.split(":")
-						var vec_coord = Vector2(parts[0].to_int(), parts[1].to_int())
-						nm.unregister_module(vec_coord)
+						# For multi-cell modules, unregister all occupied coords
+						if obj.has_method("get_rect"):
+							var rect = obj.get_rect()
+							for x in range(int(floor(rect.position.x)), int(ceil(rect.position.x + rect.size.x))):
+								for z in range(int(floor(rect.position.y)), int(ceil(rect.position.y + rect.size.y))):
+									var cell_coord = Vector2(x, z)
+									nm.unregister_module(cell_coord)
+						else:
+							nm.unregister_module(obj.get_cell_coord())
 					# Clear occupancy on the corresponding grid cells
 					if is_cable:
 						var cell = _get_cell_at_coord(coord)
@@ -105,8 +110,32 @@ func _input(event: InputEvent) -> void:
 			return
 
 func _process(delta: float) -> void:
-	if not object: return
+	# Check for hovered module
 	var mouseGridPosition = _get_grid_position()
+	if mouseGridPosition:
+		var coord = grid.world_to_cell(mouseGridPosition)
+		var world_pos = grid.cell_to_world(coord)
+		var world_point = Vector2(world_pos.x, world_pos.z)
+		var nm = null
+		if get_tree().root.has_node("Main/NetworkManager"):
+			nm = get_tree().root.get_node("Main/NetworkManager")
+		else:
+			var cs = get_tree().get_current_scene()
+			if cs and cs.has_node("NetworkManager"):
+				nm = cs.get_node("NetworkManager")
+		if nm:
+			for key in nm.module_grid.keys():
+				var mod = nm.module_grid[key]
+				if mod and not (mod is Cable) and mod.has_method("get_rect"):
+					var rect = mod.get_rect()
+					if rect.has_point(world_point):
+						status_label.text = mod.get_status()
+						status_panel.visible = true
+						status_panel.position = get_viewport().get_mouse_position() + Vector2(10, 10)
+						return
+	status_panel.visible = false
+
+	if not object: return
 	if not mouseGridPosition:
 		return
 

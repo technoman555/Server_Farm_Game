@@ -6,6 +6,7 @@ class_name Cable
 @export var data_enabled: bool = true
 @export var power_enabled: bool = true
 var connections: int = 0
+var module_connections: int = 0  # Number of module neighbors
 
 func _ready() -> void:
 	pass
@@ -14,6 +15,12 @@ func set_connections(mask: int) -> void:
 	if connections == mask:
 		return
 	connections = mask
+	_apply_visual_variant()
+
+func set_module_connections(count: int) -> void:
+	if module_connections == count:
+		return
+	module_connections = count
 	_apply_visual_variant()
 
 func _apply_visual_variant() -> void:
@@ -37,9 +44,12 @@ func _apply_visual_variant() -> void:
 		# show center if any connection exists, otherwise keep visible so cable is visible
 		center.visible = true
 
-	# Optionally color segments if power/data disabled
+	# Optionally color segments if power/data disabled or connecting modules
 	var tint = Color(0.5, 0.5, 0.9)
-	if not data_enabled:
+	if module_connections >= 2:
+		tint = Color(0.0, 1.0, 0.0)  # Green if connecting two or more modules
+		print("Cable at", get_cell_coord(), "turning green, connecting", module_connections, "modules")
+	elif not data_enabled:
 		tint = Color(0.5, 0.5, 0.9)
 	if not power_enabled:
 		tint = Color(0.9, 0.6, 0.6)

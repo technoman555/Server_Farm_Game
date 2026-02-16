@@ -4,8 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dppt42owpok8f" path="res://Scene/player.tscn" id="2_r0du0"]
 [ext_resource type="Script" uid="uid://btau0wvij1l1j" path="res://scripts/camera_pivot.gd" id="3_r0du0"]
 [ext_resource type="PackedScene" uid="uid://bn8qw4d0p5a1b" path="res://Scene/ui_placement_panel.tscn" id="4_ui000"]
-[ext_resource type="Script" uid="uid://bkmqpw3avhs7" path="res://scripts/ui_placement_panel.gd" id="5_fos0i"]
-[ext_resource type="PackedScene" uid="uid://network_manager_instance" path="res://Scene/network_manager.tscn" id="6_nm"]
+[ext_resource type="PackedScene" uid="uid://bk1rrrwhyjalg" path="res://Scene/network_manager.tscn" id="6_nm"]
 
 [node name="Main" type="Node3D" unique_id=1445546169]
 
@@ -17,12 +16,12 @@ shadow_enabled = true
 [node name="Room" parent="." unique_id=210258126 instance=ExtResource("1_uu6xs")]
 
 [node name="Player" parent="." unique_id=1222316785 instance=ExtResource("2_r0du0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3436172, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.991274, 1.3436172, 13.6388645)
 collision_layer = 0
 collision_mask = 0
 
 [node name="CameraPivot" type="Node3D" parent="." unique_id=725533702 node_paths=PackedStringArray("target")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.46540833, 13.0002365, 25.009518)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.008802, 19.795229, 49.147415)
 script = ExtResource("3_r0du0")
 target = NodePath("../Player")
 lerp_speed = 15.0
@@ -36,6 +35,5 @@ near = 0.1
 far = 100.0
 
 [node name="UIPlacementPanel" parent="." unique_id=1008336593 instance=ExtResource("4_ui000")]
-script = ExtResource("5_fos0i")
 
 [node name="NetworkManager" parent="." unique_id=993847201 instance=ExtResource("6_nm")]

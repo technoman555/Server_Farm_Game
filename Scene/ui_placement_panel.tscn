@@ -58,6 +58,11 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "Cable"
 
+[node name="ModemButton" type="Button" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=120728005]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Modem"
+
 [node name="CancelButton" type="Button" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=2142890520]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2

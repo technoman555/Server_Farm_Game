@@ -8,14 +8,33 @@
 [sub_resource type="PlaneMesh" id="PlaneMesh_4o3f6"]
 material = SubResource("StandardMaterial3D_bisa2")
 size = Vector2(50, 50)
+center_offset = Vector3(0, 0, -0.1)
 
 [node name="Ground" type="Node3D" unique_id=210258126]
 script = ExtResource("1_bisa2")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=881741807]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.50615, 0, 24.60719)
 mesh = SubResource("PlaneMesh_4o3f6")
 
 [node name="Grid" parent="." unique_id=1328356872 instance=ExtResource("1_88gup")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.470097, 0.01, -24.472736)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
 gridWidth = 50
 gridHeight = 50
+
+[node name="StatusPanel" type="Panel" parent="." unique_id=1328356873]
+visible = false
+anchors_preset = -1
+anchor_right = 0.2
+anchor_bottom = 0.15
+offset_right = 200.0
+offset_bottom = 100.0
+
+[node name="StatusLabel" type="Label" parent="StatusPanel" unique_id=1328356874]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Status"

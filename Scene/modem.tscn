@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/modem.gd" id="1_modem"]
+[ext_resource type="PackedScene" uid="uid://xyks2ofd58xk" path="res://Models/DELL_Server.glb" id="2_server"]
+
+[node name="Modem" type="StaticBody3D"]
+script = ExtResource("1_modem")
+
+[node name="DELL_Server" parent="." instance=ExtResource("2_server")]

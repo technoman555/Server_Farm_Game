@@ -7,6 +7,7 @@ extends CanvasLayer
 @onready var cluster_button = $PanelContainer/VBoxContainer/ContentContainer/ClusterButton
 @onready var server_button = $PanelContainer/VBoxContainer/ContentContainer/ServerButton
 @onready var cable_button = $PanelContainer/VBoxContainer/ContentContainer/CableButton
+@onready var modem_button = $PanelContainer/VBoxContainer/ContentContainer/ModemButton
 @onready var cancel_button = $PanelContainer/VBoxContainer/ContentContainer/CancelButton
 @onready var selected_label = $PanelContainer/VBoxContainer/ContentContainer/SelectedLabel
 
@@ -18,6 +19,7 @@ const TEST_OBJECT = preload("res://Scene/early_server.tscn")
 const SERVER = preload("res://Scene/server.tscn")
 const CLUSTER = preload("res://Scene/cluster.tscn")
 const CABLE = preload("res://Scene/cable.tscn")
+const MODEM = preload("res://Scene/modem.tscn")
 
 func _ready() -> void:
 	room = get_tree().root.get_node("Main/Room")
@@ -25,6 +27,7 @@ func _ready() -> void:
 	cluster_button.pressed.connect(_on_cluster_pressed)
 	server_button.pressed.connect(_on_server_pressed)
 	cable_button.pressed.connect(_on_cable_pressed)
+	modem_button.pressed.connect(_on_modem_pressed)
 	cancel_button.pressed.connect(_on_cancel_pressed)
 	toggle_button.pressed.connect(_on_toggle_pressed)
 	open_button.pressed.connect(_on_open_pressed)
@@ -60,6 +63,12 @@ func _on_cable_pressed() -> void:
 	update_label()
 	if room and room.has_method("set_placement_item"):
 		room.set_placement_item(CABLE)
+
+func _on_modem_pressed() -> void:
+	current_selection = "modem"
+	update_label()
+	if room and room.has_method("set_placement_item"):
+		room.set_placement_item(MODEM)
 
 func _on_cancel_pressed() -> void:
 	current_selection = ""
