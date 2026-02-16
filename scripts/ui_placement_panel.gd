@@ -31,6 +31,11 @@ func _ready() -> void:
 	cancel_button.pressed.connect(_on_cancel_pressed)
 	toggle_button.pressed.connect(_on_toggle_pressed)
 	open_button.pressed.connect(_on_open_pressed)
+	# Connect request packet button if it exists
+	var request_packet_button = get_node_or_null("PanelContainer/RequestPacketButton")
+	if request_packet_button:
+		print("sending packet")
+		request_packet_button.pressed.connect(_on_request_packet_pressed)
 	
 	update_label()
 
@@ -75,6 +80,13 @@ func _on_cancel_pressed() -> void:
 	update_label()
 	if room and room.has_method("set_placement_item"):
 		room.set_placement_item(null)
+
+func _on_request_packet_pressed() -> void:
+	print("Requesting packets for all clusters...")
+	var clusters = get_tree().get_nodes_in_group("cluster")
+	for c in clusters:
+		if c.has_method("_request_packet"):
+			c._request_packet()
 
 func update_label() -> void:
 	if current_selection == "":

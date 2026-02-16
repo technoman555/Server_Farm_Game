@@ -79,3 +79,11 @@ offset_top = 10.0
 offset_right = 60.0
 offset_bottom = 50.0
 text = "Show UI"
+
+[node name="RequestPacketButton" type="Button" parent="." unique_id=432834197]
+anchors_preset = -1
+offset_left = 664.0
+offset_top = 7.0
+offset_right = 1148.0
+offset_bottom = 38.0
+text = "Make Packet"

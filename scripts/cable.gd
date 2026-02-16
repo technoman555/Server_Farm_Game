@@ -46,8 +46,8 @@ func _apply_visual_variant() -> void:
 
 	# Optionally color segments if power/data disabled or connecting modules
 	var tint = Color(0.5, 0.5, 0.9)
-	if module_connections >= 2:
-		tint = Color(0.0, 1.0, 0.0)  # Green if connecting two or more modules
+	if module_connections >= 1:
+		tint = Color(0.0, 1.0, 0.0)  # Green if connecting one or more modules
 		print("Cable at", get_cell_coord(), "turning green, connecting", module_connections, "modules")
 	elif not data_enabled:
 		tint = Color(0.5, 0.5, 0.9)

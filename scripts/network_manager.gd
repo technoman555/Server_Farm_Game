@@ -127,12 +127,14 @@ func find_path(start: Vector2, goal: Vector2, require_data: bool=true, require_p
 			if visited.has(nb_key):
 				continue
 			var nb_cable = get_cable_at(nb)
-			if nb_cable == null:
+			var nb_module = get_module_at(nb)
+			if nb_cable == null and not (nb_module and nb_key == goal_key):
 				continue
-			if require_data and not nb_cable.data_enabled:
-				continue
-			if require_power and not nb_cable.power_enabled:
-				continue
+			if nb_cable:
+				if require_data and not nb_cable.data_enabled:
+					continue
+				if require_power and not nb_cable.power_enabled:
+					continue
 			visited[nb_key] = true
 			parent[nb_key] = cur
 			q.append(nb)

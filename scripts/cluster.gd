@@ -3,12 +3,14 @@ extends StaticBody3D
 @export var size: Vector2 = Vector2(8,3)
 @export var offset: Vector3 = Vector3.ZERO
 @export var processing_power: int = 1  # Can be upgraded
+@export var packet_queue: Array = []
 
 var request_timer: Timer
 
 func _ready() -> void:
 	for child in get_children():
 		child.position -= offset
+	add_to_group("cluster")
 	# Set up timer to request packets
 	request_timer = Timer.new()
 	request_timer.wait_time = 5.0  # Request every 5 seconds
@@ -24,10 +26,18 @@ func on_placed() -> void:
 	var nm = _find_network_manager()
 	if nm and nm.has_method("register_module"):
 		var rect = get_rect()
+		var occupied_coords = []
 		for x in range(int(floor(rect.position.x)), int(ceil(rect.position.x + rect.size.x))):
 			for z in range(int(floor(rect.position.y)), int(ceil(rect.position.y + rect.size.y))):
 				var coord = Vector2(x, z)
 				nm.register_module(coord, self)
+				occupied_coords.append(coord)
+		# Recompute connections for neighboring cables
+		for coord in occupied_coords:
+			if nm.has_method("_recompute_neighbors"):
+				nm._recompute_neighbors(coord)
+	# After placement, try to request a packet from a connected modem
+	_request_packet()
 
 func on_removed() -> void:
 	var nm = _find_network_manager()
@@ -72,11 +82,12 @@ func _request_packet() -> void:
 func on_packet_received(packet) -> void:
 	# Process the packet based on processing power
 	print("Cluster processing packet with power:", processing_power)
+	print("packets in qureue:", packet_queue.size())
 	# For now, just print
 	packet.queue_free()
 
 func get_status() -> String:
-	return "Cluster\nProcessing Power: %d\nOnline: Yes\nConnected: Yes" % processing_power
+	return "Cluster\nProcessing Power: %d\nOnline: Yes\nConnected: Yes" % processing_power + "\nPacket Queue: %d" % packet_queue.size()
 
 func _find_network_manager():
 	var nm = null
