@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://bfkoyo7el04hn"]
 
-[ext_resource type="Texture2D" uid="uid://cmimyxl575p05" path="res://Models/Faxmodem/TransparentLogo.png" id="1_i26rj"]
 [ext_resource type="Script" uid="uid://ddtqjitruear2" path="res://main_menu.gd" id="1_iwfq2"]
 [ext_resource type="PackedScene" uid="uid://chsdtmtfg3k0m" path="res://Models/ServerRack.glb" id="2_eiy7p"]
 [ext_resource type="Script" uid="uid://4y2eppd0ldbt" path="res://random_faller.gd" id="2_h7a2f"]
+[ext_resource type="Texture2D" uid="uid://v0fmu514okq7" path="res://TransparentLogo.png" id="2_iwfq2"]
 [ext_resource type="PackedScene" uid="uid://b1reep2t30nxm" path="res://Models/Faxmodem/FaxModemBlinking.tscn" id="4_qoqlk"]
 
 [sub_resource type="SystemFont" id="SystemFont_iwfq2"]
@@ -65,7 +65,7 @@ text = "Quit"
 [node name="TransparentLogo" type="Sprite2D" parent="." unique_id=167918652]
 position = Vector2(193, 175)
 scale = Vector2(0.68958336, 0.68958336)
-texture = ExtResource("1_i26rj")
+texture = ExtResource("2_iwfq2")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1455053035]
 mesh = SubResource("BoxMesh_i26rj")
