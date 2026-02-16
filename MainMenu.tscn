@@ -1,0 +1,107 @@
+[gd_scene format=3 uid="uid://bfkoyo7el04hn"]
+
+[ext_resource type="Texture2D" uid="uid://cmimyxl575p05" path="res://Models/Faxmodem/TransparentLogo.png" id="1_i26rj"]
+[ext_resource type="Script" uid="uid://ddtqjitruear2" path="res://main_menu.gd" id="1_iwfq2"]
+[ext_resource type="PackedScene" uid="uid://chsdtmtfg3k0m" path="res://Models/ServerRack.glb" id="2_eiy7p"]
+[ext_resource type="Script" uid="uid://4y2eppd0ldbt" path="res://random_faller.gd" id="2_h7a2f"]
+[ext_resource type="PackedScene" uid="uid://b1reep2t30nxm" path="res://Models/Faxmodem/FaxModemBlinking.tscn" id="4_qoqlk"]
+
+[sub_resource type="SystemFont" id="SystemFont_iwfq2"]
+font_names = PackedStringArray("Arial")
+
+[sub_resource type="Theme" id="Theme_7r1g0"]
+default_font = SubResource("SystemFont_iwfq2")
+Button/styles/normal = null
+
+[sub_resource type="BoxMesh" id="BoxMesh_i26rj"]
+size = Vector3(13.26, 0.305, 10.39)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_eiy7p"]
+data = PackedVector3Array(-6.6299996, 0.1525, 5.1949997, 6.6299996, 0.1525, 5.1949997, -6.6299996, -0.1525, 5.1949997, 6.6299996, 0.1525, 5.1949997, 6.6299996, -0.1525, 5.1949997, -6.6299996, -0.1525, 5.1949997, 6.6299996, 0.1525, -5.1949997, -6.6299996, 0.1525, -5.1949997, 6.6299996, -0.1525, -5.1949997, -6.6299996, 0.1525, -5.1949997, -6.6299996, -0.1525, -5.1949997, 6.6299996, -0.1525, -5.1949997, 6.6299996, 0.1525, 5.1949997, 6.6299996, 0.1525, -5.1949997, 6.6299996, -0.1525, 5.1949997, 6.6299996, 0.1525, -5.1949997, 6.6299996, -0.1525, -5.1949997, 6.6299996, -0.1525, 5.1949997, -6.6299996, 0.1525, -5.1949997, -6.6299996, 0.1525, 5.1949997, -6.6299996, -0.1525, -5.1949997, -6.6299996, 0.1525, 5.1949997, -6.6299996, -0.1525, 5.1949997, -6.6299996, -0.1525, -5.1949997, 6.6299996, 0.1525, 5.1949997, -6.6299996, 0.1525, 5.1949997, 6.6299996, 0.1525, -5.1949997, -6.6299996, 0.1525, 5.1949997, -6.6299996, 0.1525, -5.1949997, 6.6299996, 0.1525, -5.1949997, -6.6299996, -0.1525, 5.1949997, 6.6299996, -0.1525, 5.1949997, -6.6299996, -0.1525, -5.1949997, 6.6299996, -0.1525, 5.1949997, 6.6299996, -0.1525, -5.1949997, -6.6299996, -0.1525, -5.1949997)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_eiy7p"]
+bounce = 0.44
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h7a2f"]
+size = Vector3(0.44995117, 1.1845703, 1.423706)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qoqlk"]
+size = Vector3(0.27471924, 0.21212769, 0.27218628)
+
+[node name="MainMenu" type="Node3D" unique_id=1769821632]
+script = ExtResource("1_iwfq2")
+
+[node name="Control" type="Control" parent="." unique_id=1001864933]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_7r1g0")
+
+[node name="Button" type="Button" parent="Control" unique_id=483494596]
+layout_mode = 0
+offset_left = 45.0
+offset_top = 345.0
+offset_right = 82.0
+offset_bottom = 364.0
+text = "Start"
+
+[node name="Button2" type="Button" parent="Control" unique_id=76237116]
+layout_mode = 0
+offset_left = 52.0
+offset_top = 413.0
+offset_right = 113.0
+offset_bottom = 432.0
+text = "Options"
+
+[node name="Button3" type="Button" parent="Control" unique_id=1920602629]
+layout_mode = 0
+offset_left = 54.0
+offset_top = 472.0
+offset_right = 87.0
+offset_bottom = 491.0
+text = "Quit"
+
+[node name="TransparentLogo" type="Sprite2D" parent="." unique_id=167918652]
+position = Vector2(193, 175)
+scale = Vector2(0.68958336, 0.68958336)
+texture = ExtResource("1_i26rj")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1455053035]
+mesh = SubResource("BoxMesh_i26rj")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=1015928753]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=405620302]
+shape = SubResource("ConcavePolygonShape3D_eiy7p")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=899856238]
+transform = Transform3D(1, 0, 0, 0, 0.8265603, 0.5628482, 0, -0.5628482, 0.8265603, 0, 2.4311504, 3.8042638)
+projection = 1
+current = true
+size = 5.365
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=284085934]
+transform = Transform3D(1, 0, 0, 0, 0.103018254, 0.99467945, 0, -0.99467945, 0.103018254, 0, 9.180374, 0)
+shadow_enabled = true
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1919005163]
+transform = Transform3D(0.97354805, -0.20194945, -0.10686861, 0.19091432, 0.9759647, -0.10509438, 0.1255237, 0.08191167, 0.9887034, 0, 8.146209, 0.66418576)
+physics_material_override = SubResource("PhysicsMaterial_eiy7p")
+script = ExtResource("2_h7a2f")
+
+[node name="ServerRack" parent="RigidBody3D" unique_id=1382304641 instance=ExtResource("2_eiy7p")]
+transform = Transform3D(0.16687597, 0, 0, 0, 0.16687599, 0, 0, 0, 0.16687599, 0, 0, 0)
+
+[node name="Rack" type="CollisionShape3D" parent="RigidBody3D" unique_id=1150849295]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.036010742, 0.54052734, 0.21185303)
+shape = SubResource("BoxShape3D_h7a2f")
+
+[node name="Rack2" type="CollisionShape3D" parent="RigidBody3D" unique_id=562882560]
+transform = Transform3D(0.9999994, -4.656613e-09, 1.6391277e-07, -2.8871e-08, 1, 2.9802322e-08, -1.4901161e-08, 0, 1, 0.07595873, 0.215621, 0.18367016)
+shape = SubResource("BoxShape3D_qoqlk")
+disabled = true
+
+[node name="FaxModem" parent="RigidBody3D" unique_id=1130271577 instance=ExtResource("4_qoqlk")]
+transform = Transform3D(0.12705642, -7.21775e-09, 3.7252903e-09, 3.608875e-09, 0.12705642, 9.313226e-10, -3.7252903e-09, 0, 0.12705642, 0.06725359, 0.22863579, 0.18061262)
+visible = false

@@ -15,6 +15,14 @@ run/main_scene="uid://c1p5fv1xi1b38"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Global="*uid://dwf8m8afv5hv7"
+
+[display]
+
+window/stretch/mode="canvas_items"
+
 [input]
 
 ui_focus_prev={
