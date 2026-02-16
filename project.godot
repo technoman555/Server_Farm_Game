@@ -13,7 +13,8 @@ config_version=5
 config/name="Data Center"
 run/main_scene="uid://c1p5fv1xi1b38"
 config/features=PackedStringArray("4.6", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/image="uid://b5rn306it5qfe"
+config/icon="uid://b5rn306it5qfe"
 
 [autoload]
 
