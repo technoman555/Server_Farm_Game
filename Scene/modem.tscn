@@ -1,9 +1,14 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://c311v32s771c6"]
 
-[ext_resource type="Script" path="res://scripts/modem.gd" id="1_modem"]
+[ext_resource type="Script" uid="uid://cpna074go1xid" path="res://scripts/modem.gd" id="1_modem"]
 [ext_resource type="PackedScene" uid="uid://xyks2ofd58xk" path="res://Models/DELL_Server.glb" id="2_server"]
+[ext_resource type="PackedScene" uid="uid://b1reep2t30nxm" path="res://Models/Faxmodem/FaxModemBlinking.tscn" id="3_ku6aj"]
 
-[node name="Modem" type="StaticBody3D"]
+[node name="Modem" type="StaticBody3D" unique_id=981441751]
 script = ExtResource("1_modem")
 
-[node name="DELL_Server" parent="." instance=ExtResource("2_server")]
+[node name="DELL_Server" parent="." unique_id=1772417414 instance=ExtResource("2_server")]
+visible = false
+
+[node name="FaxModem" parent="." unique_id=1130271577 instance=ExtResource("3_ku6aj")]
+transform = Transform3D(-0.46883506, 0, -4.0986862e-08, 0, 0.46883506, 0, 4.0986862e-08, 0, -0.46883506, 0, 0.43514264, 0)

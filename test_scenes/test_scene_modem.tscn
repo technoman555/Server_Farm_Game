@@ -1,30 +1,10 @@
 [gd_scene format=3 uid="uid://ckshg6wwwxvjj"]
 
-[ext_resource type="PackedScene" uid="uid://bq5ep4ts0umu2" path="res://Models/Faxmodem/faxmodem.glb" id="1_1suqd"]
-[ext_resource type="Script" uid="uid://d2esocmq5yqrl" path="res://Models/Faxmodem/faxmodem.gd" id="2_o3uwp"]
+[ext_resource type="PackedScene" uid="uid://b1reep2t30nxm" path="res://Models/Faxmodem/FaxModemBlinking.tscn" id="1_wol44"]
 
 [node name="test_scene" type="Node3D" unique_id=1773504681]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=727076868]
 transform = Transform3D(-0.29922402, 0, 0.95418286, 0, 1, 0, -0.95418286, 0, -0.29922402, 3.959413, 0, -0.21544671)
 
-[node name="faxmodem" parent="." unique_id=904102069 instance=ExtResource("1_1suqd")]
-script = ExtResource("2_o3uwp")
-
-[node name="GreenLight" type="OmniLight3D" parent="faxmodem" unique_id=590190392]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1472216, -0.6869394, 0.28820735)
-visible = false
-light_color = Color(0.6392157, 1, 0, 1)
-light_energy = 0.2
-shadow_enabled = true
-
-[node name="PowerLight" type="OmniLight3D" parent="faxmodem" unique_id=1526817152]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.014414, -0.8778665, -0.80724484)
-light_color = Color(1, 0.15730658, 0.18714952, 1)
-shadow_enabled = true
-
-[node name="PowerLight2" type="OmniLight3D" parent="faxmodem" unique_id=1280119485]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1488534, -0.6970713, 0.15617979)
-light_color = Color(1, 0.15730658, 0.18714952, 1)
-light_energy = 0.5
-shadow_enabled = true
+[node name="FaxModem" parent="." unique_id=1130271577 instance=ExtResource("1_wol44")]
