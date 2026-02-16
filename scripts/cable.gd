@@ -54,12 +54,12 @@ func _apply_visual_variant() -> void:
 func get_cell_coord() -> Vector2:
 	# Convert this cable's global position to grid cell coordinates.
 	var grid = null
-	if get_tree().root.has_node("Main/Grid"):
-		grid = get_tree().root.get_node("Main/Grid")
+	if get_tree().root.has_node("Main/Room/Grid"):
+		grid = get_tree().root.get_node("Main/Room/Grid")
 	else:
 		var cs = get_tree().get_current_scene()
-		if cs and cs.has_node("Grid"):
-			grid = cs.get_node("Grid")
+		if cs and cs.has_node("Room/Grid"):
+			grid = cs.get_node("Room/Grid")
 	if grid and grid.has_method("world_to_cell"):
 		return grid.world_to_cell(global_position)
 	# Fallback: round X,Z to integers

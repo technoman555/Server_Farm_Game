@@ -41,11 +41,7 @@ func _on_open_pressed() -> void:
 	panel_container.visible = is_visible
 	open_button.visible = false
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_TAB:
-			_on_toggle_pressed()
-			get_tree().root.set_input_as_handled()
+
 
 func _on_cluster_pressed() -> void:
 	current_selection = "cluster"

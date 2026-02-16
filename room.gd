@@ -18,6 +18,13 @@ func set_placement_item(item_scene) -> void:
 	_reset_highlight()
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_TAB:
+			var ui = get_tree().root.get_node("Main/UIPlacementPanel")
+			if ui and ui.has_method("_on_toggle_pressed"):
+				ui._on_toggle_pressed()
+			get_tree().root.set_input_as_handled()
+			return
 	if event is InputEventMouseButton:
 		# Left click: place (existing behavior)
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:  # just pressed (not held)
@@ -53,8 +60,19 @@ func _input(event: InputEvent) -> void:
 			if nm:
 				var obj = nm.get_cable_at(coord)
 				var is_cable = true
+				var mod_coord = null
 				if not obj:
-					obj = nm.get_module_at(coord)
+					# Check if any module occupies this coord
+					var world_pos = grid.cell_to_world(coord)
+					var world_point = Vector2(world_pos.x, world_pos.z)
+					for mc in nm.module_grid.keys():
+						var mod = nm.module_grid[mc]
+						if mod and mod.has_method("get_rect"):
+							var rect = mod.get_rect()
+							if rect.has_point(world_point):
+								obj = mod
+								mod_coord = mc
+								break
 					is_cable = false
 				if obj:
 					# Inform network manager and free object node
@@ -65,11 +83,22 @@ func _input(event: InputEvent) -> void:
 					if is_cable:
 						nm.unregister_cable(coord)
 					else:
-						nm.unregister_module(coord)
-					# Clear occupancy on the corresponding grid cell
-					var cell = _get_cell_at_coord(coord)
-					if cell:
-						cell.full = false
+						var parts = mod_coord.split(":")
+						var vec_coord = Vector2(parts[0].to_int(), parts[1].to_int())
+						nm.unregister_module(vec_coord)
+					# Clear occupancy on the corresponding grid cells
+					if is_cable:
+						var cell = _get_cell_at_coord(coord)
+						if cell:
+							cell.full = false
+					else:
+						# For multi-cell objects, clear all occupied cells
+						if obj.has_method("get_rect"):
+							var rect = obj.get_rect()
+							for cell in grid.get_children():
+								var cell_world = grid.cell_to_world(grid.world_to_cell(cell.global_position))
+								if rect.has_point(Vector2(cell_world.x, cell_world.z)):
+									cell.full = false
 					if nm.has_method("_recompute_neighbors"):
 						nm._recompute_neighbors(coord)
 					_reset_highlight()
@@ -112,12 +141,12 @@ func _get_grid_position():
 	var mousePosition := get_viewport().get_mouse_position()
 	var currentCamera := get_viewport().get_camera_3d()
 	var params := PhysicsRayQueryParameters3D.new()
-	
+
 	params.from = currentCamera.project_ray_origin(mousePosition)
 	params.to = currentCamera.project_position(mousePosition, mousePositionDepth)
 	params.collide_with_bodies = false
 	params.collide_with_areas = true
-	
+
 	var worldspace := get_world_3d().direct_space_state
 	var intersect := worldspace.intersect_ray(params)
 	if not intersect: return
