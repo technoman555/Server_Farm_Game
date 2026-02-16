@@ -7,7 +7,7 @@ Hello all and welcome to **Server Farm** — a game about (go figure) building a
 (The cooler name "Data Center" was sadly already taken...)
 
 <p align="center">
-  <img src="https://via.placeholder.com/728x300.png?text=Server+Farm+Banner+(Coming+Soon)" alt="Server Farm Banner">
+  <img src="https://github.com/technoman555/Server_Farm_Game/blob/main/TransparentLogo.png" alt="Server Farm Banner">
 </p>
 
 ## Why This Project Exists
