@@ -1,17 +1,22 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://boy0a708qxbmr"]
 
-[ext_resource type="Script" path="res://scripts/packet.gd" id="1_packet"]
+[ext_resource type="Script" uid="uid://d1o8kan2ff72o" path="res://scripts/packet.gd" id="1_packet"]
+[ext_resource type="PackedScene" uid="uid://cu3j5crfqs75i" path="res://Models/Packet/packet.tscn" id="2_iqwcg"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_packet"]
 radius = 0.1
 height = 0.2
 
 [sub_resource type="StandardMaterial3D" id="Material_packet"]
-albedo_color = Color(0.0, 1.0, 0.0, 1.0)
+albedo_color = Color(0, 1, 0, 1)
 
-[node name="Packet" type="Node3D"]
+[node name="Packet" type="Node3D" unique_id=734538479]
 script = ExtResource("1_packet")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=709494625]
+visible = false
 mesh = SubResource("SphereMesh_packet")
 surface_material_override/0 = SubResource("Material_packet")
+
+[node name="Packet" parent="." unique_id=1370531413 instance=ExtResource("2_iqwcg")]
+transform = Transform3D(-1.2152921e-08, 0, 0.27802643, 0, 0.27802643, 0, -0.27802643, 0, -1.2152921e-08, 0, 0, 0)
