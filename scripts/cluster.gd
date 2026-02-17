@@ -1,10 +1,11 @@
 extends StaticBody3D
 
-@export var size: Vector2 = Vector2(8,3)
+@export var size: Vector2 = Vector2(8, 3)
 @export var offset: Vector3 = Vector3.ZERO
 @export var processing_power: int = 1  # Can be upgraded
 @export var packet_queue: Array = []
 
+var packets_processed: int = 0
 var request_timer: Timer
 
 func _ready() -> void:
@@ -19,7 +20,7 @@ func _ready() -> void:
 	add_child(request_timer)
 
 func get_rect():
-	var objectPosition = Vector2( global_position.x - int(size.x/2), global_position.z - int(size.y /2))
+	var objectPosition = Vector2(global_position.x - int(size.x / 2), global_position.z - int(size.y / 2))
 	return Rect2(objectPosition, size)
 
 func on_placed() -> void:
@@ -49,52 +50,94 @@ func on_removed() -> void:
 				nm.unregister_module(coord)
 
 func get_cell_coord() -> Vector2:
-	var grid = null
-	if get_tree().root.has_node("Main/Grid"):
-		grid = get_tree().root.get_node("Main/Grid")
-	else:
-		var cs = get_tree().get_current_scene()
-		if cs and cs.has_node("Grid"):
-			grid = cs.get_node("Grid")
-	if grid and grid.has_method("world_to_cell"):
-		return grid.world_to_cell(global_position)
+	# Use the NetworkManager's shared grid helper
+	var nm = _find_network_manager()
+	if nm:
+		var grid = nm.get_grid()
+		if grid and grid.has_method("world_to_cell"):
+			return grid.world_to_cell(global_position)
 	return Vector2(int(round(global_position.x)), int(round(global_position.z)))
 
 func _on_request_timer_timeout() -> void:
 	_request_packet()
 
 func _request_packet() -> void:
-	# Find a connected modem and request a packet
+	# Find a connected modem and ask it to send us a packet.
 	var nm = _find_network_manager()
 	if not nm:
 		return
-	var my_coord = get_cell_coord()
-	# Check all modems for a path
+
+	# Collect all unique modem instances from the module_grid
+	var modems_checked := {}
 	for key in nm.module_grid.keys():
 		var mod = nm.module_grid[key]
 		if mod and mod.is_in_group("modem"):
-			var parts = key.split(":")
-			var modem_coord = Vector2(parts[0].to_int(), parts[1].to_int())
-			if nm.find_path(modem_coord, my_coord, true, false).size() > 0:
-				mod.send_packet_to(my_coord)
-				break
+			# Avoid checking the same modem instance multiple times
+			# (modems occupy multiple cells)
+			var mod_id = mod.get_instance_id()
+			if modems_checked.has(mod_id):
+				continue
+			modems_checked[mod_id] = true
+
+			# Check if this modem is connected to us via cables
+			if nm.are_modules_connected(mod, self):
+				# Ask the modem to send a packet to us
+				mod.send_packet_to(self)
+				print("[Cluster] Requested packet from modem: ", mod.name)
+				return
+
+	print("[Cluster] No connected modem found for packet request")
 
 func on_packet_received(packet) -> void:
-	# Process the packet based on processing power
-	print("Cluster processing packet with power:", processing_power)
-	print("packets in qureue:", packet_queue.size())
-	# For now, just print
-	packet.queue_free()
+	# Process the packet and earn a reward
+	packets_processed += 1
+	print("[Cluster] Processing packet! Power: ", processing_power, " | Total processed: ", packets_processed)
+
+	# Award score based on processing power
+	var nm = _find_network_manager()
+	if nm:
+		var reward = processing_power * 10
+		nm.add_reward(reward)
+		print("[Cluster] Earned ", reward, " points! Total score: ", nm.get_score())
+
+	# Clean up the packet node
+	if packet and is_instance_valid(packet):
+		packet.queue_free()
 
 func get_status() -> String:
-	return "Cluster\nProcessing Power: %d\nOnline: Yes\nConnected: Yes" % processing_power + "\nPacket Queue: %d" % packet_queue.size()
+	var nm = _find_network_manager()
+	var adj_cables = 0
+	var connected = false
+	var current_score = 0
+	if nm:
+		adj_cables = nm.get_adjacent_cables_for_module(self).size()
+		current_score = nm.get_score()
+		# Check if connected to any modem
+		var modems_checked := {}
+		for key in nm.module_grid.keys():
+			var mod = nm.module_grid[key]
+			if mod and mod.is_in_group("modem"):
+				var mod_id = mod.get_instance_id()
+				if modems_checked.has(mod_id):
+					continue
+				modems_checked[mod_id] = true
+				if nm.are_modules_connected(mod, self):
+					connected = true
+					break
+
+	return "Cluster\nProcessing Power: %d\nCabled: %s (%d cables)\nConnected to Modem: %s\nPackets Processed: %d\nScore: %d" % [
+		processing_power,
+		"Yes" if adj_cables > 0 else "No",
+		adj_cables,
+		"Yes" if connected else "No",
+		packets_processed,
+		current_score
+	]
 
 func _find_network_manager():
-	var nm = null
 	if get_tree().root.has_node("Main/NetworkManager"):
-		nm = get_tree().root.get_node("Main/NetworkManager")
-	else:
-		var cs = get_tree().get_current_scene()
-		if cs and cs.has_node("NetworkManager"):
-			nm = cs.get_node("NetworkManager")
-	return nm
+		return get_tree().root.get_node("Main/NetworkManager")
+	var cs = get_tree().get_current_scene()
+	if cs and cs.has_node("NetworkManager"):
+		return cs.get_node("NetworkManager")
+	return null

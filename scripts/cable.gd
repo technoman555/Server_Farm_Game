@@ -41,37 +41,30 @@ func _apply_visual_variant() -> void:
 	if seg_w:
 		seg_w.visible = (connections & 8) != 0
 	if center:
-		# show center if any connection exists, otherwise keep visible so cable is visible
 		center.visible = true
 
-	# Optionally color segments if power/data disabled or connecting modules
+	# Color segments based on state
 	var tint = Color(0.5, 0.5, 0.9)
 	if module_connections >= 1:
 		tint = Color(0.0, 1.0, 0.0)  # Green if connecting one or more modules
-		print("Cable at", get_cell_coord(), "turning green, connecting", module_connections, "modules")
 	elif not data_enabled:
 		tint = Color(0.5, 0.5, 0.9)
 	if not power_enabled:
 		tint = Color(0.9, 0.6, 0.6)
-	for name in ["Seg_N", "Seg_E", "Seg_S", "Seg_W", "Center"]:
-		var n = get_node_or_null(name)
+	for seg_name in ["Seg_N", "Seg_E", "Seg_S", "Seg_W", "Center"]:
+		var n = get_node_or_null(seg_name)
 		if n and n is MeshInstance3D:
-			# Assign a simple material override to tint the mesh instance
 			var mat = StandardMaterial3D.new()
 			mat.albedo_color = tint
 			n.material_override = mat
 
 func get_cell_coord() -> Vector2:
-	# Convert this cable's global position to grid cell coordinates.
-	var grid = null
-	if get_tree().root.has_node("Main/Room/Grid"):
-		grid = get_tree().root.get_node("Main/Room/Grid")
-	else:
-		var cs = get_tree().get_current_scene()
-		if cs and cs.has_node("Room/Grid"):
-			grid = cs.get_node("Room/Grid")
-	if grid and grid.has_method("world_to_cell"):
-		return grid.world_to_cell(global_position)
+	# Use the NetworkManager's shared grid helper for consistent coord lookup.
+	var nm = _find_network_manager()
+	if nm:
+		var grid = nm.get_grid()
+		if grid and grid.has_method("world_to_cell"):
+			return grid.world_to_cell(global_position)
 	# Fallback: round X,Z to integers
 	return Vector2(int(round(global_position.x)), int(round(global_position.z)))
 
@@ -87,12 +80,9 @@ func on_removed() -> void:
 		nm.unregister_cable(get_cell_coord())
 
 func _find_network_manager():
-	# Prefer stable path under Main, fall back to current scene lookup
-	var nm = null
 	if get_tree().root.has_node("Main/NetworkManager"):
-		nm = get_tree().root.get_node("Main/NetworkManager")
-	else:
-		var cs = get_tree().get_current_scene()
-		if cs and cs.has_node("NetworkManager"):
-			nm = cs.get_node("NetworkManager")
-	return nm
+		return get_tree().root.get_node("Main/NetworkManager")
+	var cs = get_tree().get_current_scene()
+	if cs and cs.has_node("NetworkManager"):
+		return cs.get_node("NetworkManager")
+	return null

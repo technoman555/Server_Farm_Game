@@ -3,6 +3,7 @@ extends StaticBody3D
 @export var size: Vector2 = Vector2(2, 2)
 @export var offset: Vector3 = Vector3.ZERO
 var packets_sent: int = 0
+var is_connected: bool = false
 
 func _ready() -> void:
 	for child in get_children():
@@ -38,44 +39,48 @@ func on_removed() -> void:
 				nm.unregister_module(coord)
 
 func get_cell_coord() -> Vector2:
-	var grid = null
-	if get_tree().root.has_node("Main/Grid"):
-		grid = get_tree().root.get_node("Main/Grid")
-	else:
-		var cs = get_tree().get_current_scene()
-		if cs and cs.has_node("Grid"):
-			grid = cs.get_node("Grid")
-	if grid and grid.has_method("world_to_cell"):
-		return grid.world_to_cell(global_position)
+	# Use the NetworkManager's shared grid helper
+	var nm = _find_network_manager()
+	if nm:
+		var grid = nm.get_grid()
+		if grid and grid.has_method("world_to_cell"):
+			return grid.world_to_cell(global_position)
 	return Vector2(int(round(global_position.x)), int(round(global_position.z)))
 
 func _find_network_manager():
-	var nm = null
 	if get_tree().root.has_node("Main/NetworkManager"):
-		nm = get_tree().root.get_node("Main/NetworkManager")
-	else:
-		var cs = get_tree().get_current_scene()
-		if cs and cs.has_node("NetworkManager"):
-			nm = cs.get_node("NetworkManager")
-	return nm
+		return get_tree().root.get_node("Main/NetworkManager")
+	var cs = get_tree().get_current_scene()
+	if cs and cs.has_node("NetworkManager"):
+		return cs.get_node("NetworkManager")
+	return null
 
-# Method to send a packet to a requesting server
-func send_packet_to(target_coord: Vector2) -> void:
+# Called by the NetworkManager's send_packet(). The modem is the SOURCE,
+# so this is triggered when a cluster asks for a packet and the NM routes
+# through this modem. The modem generates the packet and the NM handles delivery.
+func send_packet_to(target_module: Node) -> void:
 	var nm = _find_network_manager()
-	if nm and nm.has_method("send_packet"):
-		var start_coord = get_cell_coord()
-		# Find an adjacent cable to send from
-		var dirs = [Vector2(0, -1), Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0)]
-		for d in dirs:
-			var nb = start_coord + d
-			if nm.get_cable_at(nb):
-				start_coord = nb
-				break
-		nm.send_packet(start_coord, target_coord)
+	if not nm:
+		print("[Modem] No NetworkManager found!")
+		return
+	var success = nm.send_packet(self, target_module)
+	if success:
 		packets_sent += 1
-		print("Modem at", get_cell_coord(), "sent packet to", target_coord,)
+		is_connected = true
+		print("[Modem] Sent packet to ", target_module.name, " (total sent: ", packets_sent, ")")
+	else:
+		is_connected = false
+		print("[Modem] Failed to send packet to ", target_module.name, " — no cable path")
 
 func get_status() -> String:
-	if not is_inside_tree():
-		return "Modem\nOnline: No\nConnected: No"
-	else: return "Modem\nOnline: Yes\nConnected: " + (str(get_cell_coord()) if get_cell_coord() else "Unknown" ) + "\nPackets Sent: " + str(packets_sent)
+	var nm = _find_network_manager()
+	var adj_cables = 0
+	if nm:
+		adj_cables = nm.get_adjacent_cables_for_module(self).size()
+	var connected_str = "Yes" if adj_cables > 0 else "No"
+	return "Modem\nOnline: %s\nCabled: %s (%d cables)\nPackets Sent: %d" % [
+		"Yes" if is_inside_tree() else "No",
+		connected_str,
+		adj_cables,
+		packets_sent
+	]

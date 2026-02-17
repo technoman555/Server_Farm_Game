@@ -3,10 +3,17 @@ extends Node3D
 @onready var status_panel: Panel = $StatusPanel
 @onready var status_label: Label = $StatusPanel/StatusLabel
 
+const CABLE = preload("res://Scene/cable.tscn")
+
 var object
 var isValid = false
 var objectCells
 var current_placement_item = null  # Stores the scene to place from UI selection
+
+# Drag placement variables
+var is_dragging = false
+var drag_start_coord = Vector2()
+var drag_end_coord = Vector2()
 
 func set_placement_item(item_scene) -> void:
 	"""Called by UI to set which item to place"""
@@ -16,7 +23,14 @@ func set_placement_item(item_scene) -> void:
 		object.queue_free()
 		object = null
 	isValid = false
+	is_dragging = false
 	_reset_highlight()
+	
+	# Create a preview object immediately so it follows the cursor
+	if current_placement_item != null:
+		var preview = current_placement_item.instantiate()
+		add_child(preview)
+		object = preview
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
@@ -27,25 +41,61 @@ func _input(event: InputEvent) -> void:
 			get_tree().root.set_input_as_handled()
 			return
 	if event is InputEventMouseButton:
-		# Left click: place (existing behavior)
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:  # just pressed (not held)
-			
-			# Case 1: No preview object yet → start placing one
-			if object == null:
-				if current_placement_item == null:
-					return  # No item selected, do nothing
-				
-				var new_placement = current_placement_item.instantiate()
-				add_child(new_placement)
-				object = new_placement
-				
-			# Case 2: We have a preview object → try to place it if valid
-			elif isValid:
-				_place_placement(objectCells)  # your placement function (finalize position, clear preview, etc.)
-		# Right click: remove cable under cursor when not placing
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				var mouseGridPosition = _get_grid_position()
+				if not mouseGridPosition:
+					return
+				var coord = grid.world_to_cell(mouseGridPosition)
+
+				if current_placement_item == CABLE:
+					# Start drag for cables
+					is_dragging = true
+					drag_start_coord = coord
+					drag_end_coord = coord
+					_reset_highlight()
+				else:
+					# For non-cable items: click to place the preview if valid
+					if object != null and isValid:
+						_place_placement(objectCells)
+						# Create a new preview so the user can keep placing
+						if current_placement_item != null:
+							var new_preview = current_placement_item.instantiate()
+							add_child(new_preview)
+							object = new_preview
+					elif object == null and current_placement_item != null:
+						# Fallback: create preview if somehow missing
+						var new_placement = current_placement_item.instantiate()
+						add_child(new_placement)
+						object = new_placement
+			else:  # released
+				if current_placement_item == CABLE and is_dragging:
+					# Place cables along path
+					var path = find_path_astar(drag_start_coord, drag_end_coord)
+					if path.size() > 0:
+						_place_cables_along_path(path)
+					else:
+						# If no path, try to place single cable at start if possible
+						var cell = _get_cell_at_coord(drag_start_coord)
+						if cell and not cell.full:
+							var cable = CABLE.instantiate()
+							add_child(cable)
+							cable.global_position = grid.cell_to_world(drag_start_coord)
+							if cable.has_method("on_placed"):
+								cable.on_placed()
+							cell.full = true
+					is_dragging = false
+					_reset_highlight()
+		# Right click: cancel placement or remove object under cursor
 		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			# Only remove when there's no active placement preview
-			if object != null:
+			# If we have a placement preview, cancel the placement mode
+			if current_placement_item != null:
+				set_placement_item(null)
+				# Also update the UI label
+				var ui = get_tree().root.get_node_or_null("Main/UIPlacementPanel")
+				if ui:
+					ui.current_selection = ""
+					ui.update_label()
 				return
 			var mouseGridPosition = _get_grid_position()
 			if not mouseGridPosition:
@@ -135,6 +185,22 @@ func _process(delta: float) -> void:
 						return
 	status_panel.visible = false
 
+	# Update drag end coord if dragging and highlight the A* path preview
+	if is_dragging and mouseGridPosition:
+		drag_end_coord = grid.world_to_cell(mouseGridPosition)
+		_reset_highlight()
+		var preview_path = find_path_astar(drag_start_coord, drag_end_coord)
+		if preview_path.size() > 0:
+			for coord in preview_path:
+				var cell = _get_cell_at_coord(coord)
+				if cell:
+					cell.change_color(Color.GREEN)
+		else:
+			# No valid path - highlight start cell red
+			var start_cell = _get_cell_at_coord(drag_start_coord)
+			if start_cell:
+				start_cell.change_color(Color.RED)
+
 	if not object: return
 	if not mouseGridPosition:
 		return
@@ -144,19 +210,21 @@ func _process(delta: float) -> void:
 		var coord = grid.world_to_cell(mouseGridPosition)
 		var world_center = grid.cell_to_world(coord)
 		object.global_position = world_center
-		_reset_highlight()
-		var cell = _get_cell_at_coord(coord)
-		objectCells = []
-		if cell:
-			objectCells.append(cell)
-			if cell.full:
-				cell.change_color(Color.RED)
-				isValid = false
+		# Only highlight single cell when not dragging (drag highlighting is handled above)
+		if not is_dragging:
+			_reset_highlight()
+			var cell = _get_cell_at_coord(coord)
+			objectCells = []
+			if cell:
+				objectCells.append(cell)
+				if cell.full:
+					cell.change_color(Color.RED)
+					isValid = false
+				else:
+					cell.change_color(Color.GREEN)
+					isValid = true
 			else:
-				cell.change_color(Color.GREEN)
-				isValid = true
-		else:
-			isValid = false
+				isValid = false
 		return
 
 	# Default placement flow for multi-cell objects
@@ -227,6 +295,18 @@ func _place_placement(objectCells):
 
 	_reset_highlight()
 
+func _place_cables_along_path(path: Array):
+	# Place cables along the path
+	for coord in path:
+		var cell = _get_cell_at_coord(coord)
+		if cell and not cell.full:
+			var cable = CABLE.instantiate()
+			add_child(cable)
+			cable.global_position = grid.cell_to_world(coord)
+			if cable.has_method("on_placed"):
+				cable.on_placed()
+			cell.full = true
+
 
 
 func _get_cell_at_coord(coord: Vector2) -> Node:
@@ -235,6 +315,87 @@ func _get_cell_at_coord(coord: Vector2) -> Node:
 		if int(c.x) == int(coord.x) and int(c.y) == int(coord.y):
 			return child
 	return null
+
+func _coord_key(coord: Vector2) -> String:
+	return str(int(round(coord.x))) + ":" + str(int(round(coord.y)))
+
+func find_path_astar(start_coord: Vector2, end_coord: Vector2) -> Array:
+	# A* pathfinding for cable placement, avoiding occupied cells
+	# Round coordinates to integers
+	start_coord = Vector2(round(start_coord.x), round(start_coord.y))
+	end_coord = Vector2(round(end_coord.x), round(end_coord.y))
+
+	var astar = AStar2D.new()
+	var cells = grid.get_children()
+	if cells.size() == 0:
+		return []
+	var coord_to_id = {}
+	var id_to_coord = {}
+	var id_counter = 0
+
+	# Find grid bounds
+	var min_coord = Vector2(INF, INF)
+	var max_coord = Vector2(-INF, -INF)
+	for cell in cells:
+		var coord = grid.world_to_cell(cell.global_position)
+		min_coord = Vector2(min(min_coord.x, coord.x), min(min_coord.y, coord.y))
+		max_coord = Vector2(max(max_coord.x, coord.x), max(max_coord.y, coord.y))
+
+	# Check if start and end are within bounds
+	if start_coord.x < min_coord.x or start_coord.x > max_coord.x or start_coord.y < min_coord.y or start_coord.y > max_coord.y:
+		return []
+	if end_coord.x < min_coord.x or end_coord.x > max_coord.x or end_coord.y < min_coord.y or end_coord.y > max_coord.y:
+		return []
+
+	# Add all cells as points
+	for cell in cells:
+		var coord = grid.world_to_cell(cell.global_position)
+		var key = _coord_key(coord)
+		var id = id_counter
+		coord_to_id[key] = id
+		id_to_coord[id] = coord
+		astar.add_point(id, Vector2(coord.x, coord.y))
+		if cell.full:
+			astar.set_point_disabled(id, true)
+		id_counter += 1
+
+	# Connect neighbors (connect all adjacent cells; AStar2D handles disabled points during pathfinding)
+	for cell in cells:
+		var coord = grid.world_to_cell(cell.global_position)
+		var key = _coord_key(coord)
+		var id = coord_to_id.get(key, null)
+		if id == null:
+			continue
+		for dir in [Vector2(0, -1), Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0)]:
+			var neighbor_coord = coord + dir
+			var neighbor_key = _coord_key(neighbor_coord)
+			var neighbor_id = coord_to_id.get(neighbor_key, null)
+			if neighbor_id == null:
+				continue
+			if not astar.are_points_connected(id, neighbor_id):
+				astar.connect_points(id, neighbor_id)
+
+	var start_key = _coord_key(start_coord)
+	var end_key = _coord_key(end_coord)
+	if not coord_to_id.has(start_key) or not coord_to_id.has(end_key):
+		return []
+
+	var start_id = coord_to_id.get(start_key, null)
+	var end_id = coord_to_id.get(end_key, null)
+	if start_id == null or end_id == null:
+		return []
+
+	if astar.is_point_disabled(start_id) or astar.is_point_disabled(end_id):
+		return []
+
+	var path_ids = astar.get_id_path(start_id, end_id)
+	var path_coords = []
+	for id in path_ids:
+		var coord = id_to_coord.get(id, null)
+		if coord == null:
+			continue
+		path_coords.append(coord)
+	return path_coords
 	
 	
 	
