@@ -22,6 +22,7 @@ const DIR_BIT := {
 
 # === SCORE / REWARD ===
 var score: int = 0
+signal score_changed(new_score)
 
 func _coord_key(coord: Vector2) -> String:
 	return str(int(coord.x)) + ":" + str(int(coord.y))
@@ -272,10 +273,93 @@ func send_packet(from_module: Node, to_module: Node) -> bool:
 		packet.set_path(best_path)
 	return true
 
+func send_text(from_module: Node, to_module: Node) -> bool:
+	# Find cable-to-cable path between two modules
+	var from_cables = get_adjacent_cables_for_module(from_module)
+	var to_cables = get_adjacent_cables_for_module(to_module)
+
+	if from_cables.is_empty():
+		print("[NM] no cables adjacent to source module ", from_module.name)
+		return false
+	if to_cables.is_empty():
+		print("[NM] no cables adjacent to target module ", to_module.name)
+		return false
+
+	# Try to find a path from any from_cable to any to_cable
+	var best_path := []
+	for fc in from_cables:
+		for tc in to_cables:
+			var path = find_path(fc, tc, true, false)
+			if path.size() > 0:
+				if best_path.is_empty() or path.size() < best_path.size():
+					best_path = path
+				break  # found a path from this start, move on
+		if not best_path.is_empty():
+			break
+
+	if best_path.is_empty():
+		print("[NM] no text path between ", from_module.name, " and ", to_module.name)
+		return false
+
+	print("[NM] sending text along path: ", best_path)
+
+	# Instantiate text
+	var text_scene = preload("res://Scene/text.tscn")
+	var text = text_scene.instantiate()
+	# Add to scene under the NetworkManager's parent
+	var scene_root = get_parent()
+	if scene_root:
+		scene_root.add_child(text)
+		text.target_module = to_module
+		text.set_path(best_path)
+	return true
+
+func send_email(from_module: Node, to_module: Node) -> bool:
+	# Find cable-to-cable path between two modules
+	var from_cables = get_adjacent_cables_for_module(from_module)
+	var to_cables = get_adjacent_cables_for_module(to_module)
+
+	if from_cables.is_empty():
+		print("[NM] no cables adjacent to source module ", from_module.name)
+		return false
+	if to_cables.is_empty():
+		print("[NM] no cables adjacent to target module ", to_module.name)
+		return false
+
+	# Try to find a path from any from_cable to any to_cable
+	var best_path := []
+	for fc in from_cables:
+		for tc in to_cables:
+			var path = find_path(fc, tc, true, false)
+			if path.size() > 0:
+				if best_path.is_empty() or path.size() < best_path.size():
+					best_path = path
+				break  # found a path from this start, move on
+		if not best_path.is_empty():
+			break
+
+	if best_path.is_empty():
+		print("[NM] no email path between ", from_module.name, " and ", to_module.name)
+		return false
+
+	print("[NM] sending email along path: ", best_path)
+
+	# Instantiate email
+	var email_scene = preload("res://Scene/email.tscn")
+	var email = email_scene.instantiate()
+	# Add to scene under the NetworkManager's parent
+	var scene_root = get_parent()
+	if scene_root:
+		scene_root.add_child(email)
+		email.target_module = to_module
+		email.set_path(best_path)
+	return true
+
 # ─── Reward ────────────────────────────────────────────────────
 func add_reward(amount: int) -> void:
 	score += amount
 	print("[NM] +", amount, " reward! Total score: ", score)
+	score_changed.emit(score)
 
 func get_score() -> int:
 	return score

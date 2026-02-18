@@ -1,14 +1,14 @@
 extends StaticBody3D
 
-@export var size: Vector2 = Vector2(1, 1)
+@export var size: Vector2 = Vector2(2, 2)
 @export var offset: Vector3 = Vector3.ZERO
-var packets_sent: int = 0
-var is_connected: bool = false
+
+var emails_received: int = 0
 
 func _ready() -> void:
 	for child in get_children():
 		child.position -= offset
-	add_to_group("modem")
+	add_to_group("internet")
 
 func get_rect():
 	var objectPosition = Vector2(global_position.x - int(size.x / 2), global_position.z - int(size.y / 2))
@@ -47,30 +47,20 @@ func get_cell_coord() -> Vector2:
 			return grid.world_to_cell(global_position)
 	return Vector2(int(round(global_position.x)), int(round(global_position.z)))
 
-func _find_network_manager():
-	if get_tree().root.has_node("Main/NetworkManager"):
-		return get_tree().root.get_node("Main/NetworkManager")
-	var cs = get_tree().get_current_scene()
-	if cs and cs.has_node("NetworkManager"):
-		return cs.get_node("NetworkManager")
-	return null
+func on_email_received(email) -> void:
+	# Process the email and award points
+	emails_received += 1
+	print("[Internet] Received email! Total received: ", emails_received)
 
-# Called by the NetworkManager's send_packet(). The modem is the SOURCE,
-# so this is triggered when a cluster asks for a packet and the NM routes
-# through this modem. The modem generates the packet and the NM handles delivery.
-func send_packet_to(target_module: Node) -> void:
+	# Award 2 points
 	var nm = _find_network_manager()
-	if not nm:
-		print("[Modem] No NetworkManager found!")
-		return
-	var success = nm.send_packet(self, target_module)
-	if success:
-		packets_sent += 1
-		is_connected = true
-		print("[Modem] Sent packet to ", target_module.name, " (total sent: ", packets_sent, ")")
-	else:
-		is_connected = false
-		print("[Modem] Failed to send packet to ", target_module.name, " — no cable path")
+	if nm:
+		nm.add_reward(2)
+		print("[Internet] Awarded 2 points! Total score: ", nm.get_score())
+
+	# Clean up the email node
+	if email and is_instance_valid(email):
+		email.queue_free()
 
 func get_status() -> String:
 	var nm = _find_network_manager()
@@ -78,9 +68,19 @@ func get_status() -> String:
 	if nm:
 		adj_cables = nm.get_adjacent_cables_for_module(self).size()
 	var connected_str = "Yes" if adj_cables > 0 else "No"
-	return "Modem\nOnline: %s\nCabled: %s (%d cables)\nPackets Sent: %d" % [
+	var current_score = nm.get_score() if nm else 0
+	return "Internet\nOnline: %s\nCabled: %s (%d cables)\nEmails Received: %d\nScore: %d" % [
 		"Yes" if is_inside_tree() else "No",
 		connected_str,
 		adj_cables,
-		packets_sent
+		emails_received,
+		current_score
 	]
+
+func _find_network_manager():
+	if get_tree().root.has_node("Main/NetworkManager"):
+		return get_tree().root.get_node("Main/NetworkManager")
+	var cs = get_tree().get_current_scene()
+	if cs and cs.has_node("NetworkManager"):
+		return cs.get_node("NetworkManager")
+	return null

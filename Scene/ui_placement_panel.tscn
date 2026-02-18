@@ -63,10 +63,24 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "Modem"
 
+[node name="ClientButton" type="Button" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=120728006]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Client"
+
+[node name="InternetButton" type="Button" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=120728007]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Internet"
+
 [node name="CancelButton" type="Button" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=2142890520]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "Cancel"
+
+[node name="MoneyLabel" type="Label" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=123456796]
+layout_mode = 2
+text = "Money: 0"
 
 [node name="SelectedLabel" type="Label" parent="PanelContainer/VBoxContainer/ContentContainer" unique_id=955868921]
 layout_mode = 2
@@ -80,10 +94,8 @@ offset_right = 60.0
 offset_bottom = 50.0
 text = "Show UI"
 
-[node name="RequestPacketButton" type="Button" parent="." unique_id=432834197]
-anchors_preset = -1
-offset_left = 664.0
-offset_top = 7.0
-offset_right = 1148.0
-offset_bottom = 38.0
-text = "Make Packet"
+[node name="Money" type="Label" parent="." unique_id=2134926760]
+offset_left = 1017.0
+offset_top = 10.0
+offset_right = 1146.0
+offset_bottom = 51.0

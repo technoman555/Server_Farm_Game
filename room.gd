@@ -33,6 +33,19 @@ func set_placement_item(item_scene) -> void:
 		object = preview
 
 func _input(event: InputEvent) -> void:
+	# Check if mouse is over UI to prevent accidental placement
+	if event is InputEventMouseButton or event is InputEventMouseMotion:
+		var ui = get_tree().root.get_node_or_null("Main/UIPlacementPanel")
+		if ui:
+			if ui.panel_container.visible:
+				var rect = ui.panel_container.get_global_rect()
+				if rect.has_point(get_viewport().get_mouse_position()):
+					return  # Don't process input if mouse is over the UI panel
+			if ui.open_button.visible:
+				var rect = ui.open_button.get_global_rect()
+				if rect.has_point(get_viewport().get_mouse_position()):
+					return  # Don't process input if mouse is over the open button
+
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_TAB:
 			var ui = get_tree().root.get_node("Main/UIPlacementPanel")

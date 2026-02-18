@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://c8q8q8q8q8q8q"]
+
+[ext_resource type="Script" uid="uid://t1t1t1t1t1t1" path="res://scripts/text.gd" id="1_text"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_text"]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Material_text"]
+albedo_color = Color(0, 0, 1, 1)
+
+[node name="Text" type="Node3D" unique_id=123456792]
+script = ExtResource("1_text")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=123456793]
+mesh = SubResource("SphereMesh_text")
+surface_material_override/0 = SubResource("Material_text")
